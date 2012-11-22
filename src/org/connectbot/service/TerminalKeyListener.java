@@ -202,6 +202,70 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 				curMetaState |= KeyEvent.META_ALT_ON;
 			}
 
+            // Workaround Motorola Hardware-Keyboard not having mapped the <,>,| keys... (WTF??)
+            if (keyCode == KeyEvent.KEYCODE_UNKNOWN){
+                // This should normally not happen, it's probably the key we want.
+                if ((curMetaState & KeyEvent.META_SHIFT_ON) == KeyEvent.META_SHIFT_ON){
+                    // We got "Shift+<" so give >
+                    writeToBridge('>');
+                    return true;
+                } else if ((curMetaState & KeyEvent.META_ALT_ON) == KeyEvent.META_ALT_ON){
+                    // We got "Alt+<" so give: |
+                    writeToBridge('|');
+                    return true;
+                } else {
+                    // We simply got "<" so give: <
+                    writeToBridge('<');
+                    return true;
+                }
+            }
+
+            // Workaround Motorola Hardware-Keyboard issue with ) being mapped to } (WTF again.)
+            if ((curMetaState & KeyEvent.META_ALT_ON) == KeyEvent.META_ALT_ON
+                    && keyCode == KeyEvent.KEYCODE_0){
+                writeToBridge('}');
+                return true;
+            }
+
+            // Workaround for the missing Ctrl+C support:
+            if ((curMetaState & KeyEvent.META_CTRL_ON) == KeyEvent.META_CTRL_ON
+                    && keyCode == KeyEvent.KEYCODE_C){
+                writeToBridge( 0x0003 ); // End-of-Text character
+                return true;
+            }
+
+            // Enable the DEL-key:
+            if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL){
+                // Write the sequence: ESC[3~
+                // See http://www.debian.org/doc/debian-policy/ch-opersys.html#s9.8
+                sendEscape();
+                writeToBridge('[');
+                writeToBridge('3');
+                writeToBridge('~');
+                return true;
+            }
+
+            // Enable the END- and POS1-key
+            if (keyCode == KeyEvent.KEYCODE_MOVE_END){
+                // See http://fplanque.com/dev/mac/mac-osx-terminal-page-up-down-home-end-of-line
+                if ((curMetaState & KeyEvent.META_SHIFT_ON) == KeyEvent.META_SHIFT_ON){
+                    // A workaround, since there is no POS1-key...
+                    // Send sequence "ESC[1~" e.g. HOME (or POS1)
+                    sendEscape();
+                    writeToBridge('[');
+                    writeToBridge('1');
+                    writeToBridge('~');
+                    return true;
+                } else {
+                    // Send sequence "ESC[4~" e.g. END
+                    sendEscape();
+                    writeToBridge('[');
+                    writeToBridge('4');
+                    writeToBridge('~');
+                    return true;
+                }
+			}
+
 			int key = event.getUnicodeChar(curMetaState);
 			// no hard keyboard?  ALT-k should pass through to below
 			if ((orgMetaState & KeyEvent.META_ALT_ON) != 0 &&
