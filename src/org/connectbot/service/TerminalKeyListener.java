@@ -16,15 +16,6 @@
  */
 package org.connectbot.service;
 
-import java.io.IOException;
-
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
-import org.connectbot.TerminalView;
-import org.connectbot.bean.SelectionArea;
-import org.connectbot.util.PreferenceConstants;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
@@ -37,6 +28,11 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import de.mud.terminal.VDUBuffer;
 import de.mud.terminal.vt320;
+import org.connectbot.TerminalView;
+import org.connectbot.bean.SelectionArea;
+import org.connectbot.util.PreferenceConstants;
+
+import java.io.IOException;
 
 /**
  * @author kenny
@@ -487,7 +483,6 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 	}
 
 	/**
-	 * @param key
 	 * @return successful
 	 */
 	private boolean sendFunctionKey(int keyCode) {
@@ -537,6 +532,8 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 	 * @param code
 	 */
 	public void metaPress(int code) {
+        // For me, don't lock anything:
+        /*
 		if ((metaState & (code << 1)) != 0) {
 			metaState &= ~(code << 1);
 		} else if ((metaState & code) != 0) {
@@ -544,7 +541,7 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 			metaState |= code << 1;
 		} else
 			metaState |= code;
-		bridge.redraw();
+		bridge.redraw();*/
 	}
 
 	public void setTerminalKeyMode(String keymode) {
