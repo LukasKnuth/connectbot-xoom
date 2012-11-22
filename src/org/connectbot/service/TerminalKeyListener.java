@@ -248,10 +248,15 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
 				}
 
 				// handle pressing f-keys
+                /*
+                    Commenting this out helps with the escape-: issue in VIM
+                    Also, this stops sending <Fx> instead of the god-damn Key.
+
 				if ((hardKeyboard && !hardKeyboardHidden)
 						&& (curMetaState & KeyEvent.META_SHIFT_ON) != 0
 						&& sendFunctionKey(keyCode))
 					return true;
+                }*/
 
 				if (key < 0x80)
 					writeToBridge(key);
