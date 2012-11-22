@@ -17,11 +17,6 @@
 
 package org.connectbot;
 
-import org.connectbot.bean.HostBean;
-import org.connectbot.service.OnBridgeConnectionListener;
-import org.connectbot.service.TerminalBridge;
-import org.connectbot.service.TerminalManager;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +33,10 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import org.connectbot.bean.HostBean;
+import org.connectbot.service.OnBridgeConnectionListener;
+import org.connectbot.service.TerminalBridge;
+import org.connectbot.service.TerminalManager;
 
 public class ConsoleActivity extends FragmentActivity implements ConsoleFragment.ConsoleFragmentContainer, HostListFragment.HostListFragmentContainer, OnBridgeConnectionListener {
 	public final static String TAG = "ConnectBot.ConsoleActivity";
@@ -128,7 +127,17 @@ public class ConsoleActivity extends FragmentActivity implements ConsoleFragment
 		ft.commit();
 	}
 
-	/**
+    private HostBean current_host;
+    @Override
+    public void onBackPressed (){
+        if (current_host != null){
+            bound.getConnectedBridge(current_host).getKeyHandler().sendEscape();
+        } else {
+            this.finish();
+        }
+    }
+
+    /**
 	 *
 	 */
 	private void configureOrientation() {
@@ -252,6 +261,7 @@ public class ConsoleActivity extends FragmentActivity implements ConsoleFragment
 		fragmentHostList.updateHandler.sendEmptyMessage(-1);
 		fragmentHostList.setCurrentSelected(host);
 		mUiHandler.sendEmptyMessage(MSG_INVALIDATE_MENU);
+        this.current_host = host;
 	}
 
 	public boolean startConsoleActivity(Uri uri) {
