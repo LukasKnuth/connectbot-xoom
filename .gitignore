@@ -3,3 +3,7 @@ gen
 launchpad-*.tar.gz
 local.properties
 *~
+# IntelliJ stuff:
+ConnectBot.iml
+Tests.iml
+.idea/
