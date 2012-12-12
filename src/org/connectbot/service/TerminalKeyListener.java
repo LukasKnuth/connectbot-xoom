@@ -227,13 +227,6 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
                 return true;
             }
 
-            // Workaround for the missing Ctrl+C support:
-            if ((curMetaState & KeyEvent.META_CTRL_ON) == KeyEvent.META_CTRL_ON
-                    && keyCode == KeyEvent.KEYCODE_C){
-                writeToBridge( 0x0003 ); // End-of-Text character
-                return true;
-            }
-
             // Enable the DEL-key:
             if (keyCode == KeyEvent.KEYCODE_FORWARD_DEL){
                 // Write the sequence: ESC[3~
@@ -264,6 +257,14 @@ public class TerminalKeyListener implements OnKeyListener, OnSharedPreferenceCha
                     writeToBridge('~');
                     return true;
                 }
+			}
+
+            // Workaround for the (deactivated) Ctrl+[x] support:
+            if ((curMetaState & KeyEvent.META_CTRL_ON) == KeyEvent.META_CTRL_ON
+                    && event.isPrintingKey()){
+                int key = event.getUnicodeChar(0);
+                bridge.transport.write( keyAsControl(key) );
+                return true;
 			}
 
 			int key = event.getUnicodeChar(curMetaState);

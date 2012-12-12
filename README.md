@@ -10,7 +10,7 @@ The following changes have been made to the client:
 
 * The "<,>,|" key in the lower right corner works now (to be used as on a normal keyboard)
 * Pressing ALT+0 now sends the desired "}" instead of the wrong mapped ")"
-* The interrupt-signal is now send when using CTRL+C (like in a Unix Terminal)
+* The CTRL+[Key] combinations now work as on a normal Linux Terminal
 * The DEL-Key works now
 * The END-Key works. Also, since there is no POS1-key on the keyboard, pressing SHIFT+END will set the cursor to the beginning of the current line
 * The standard "Dead Key" behaviour of the CTRL and ALT keys has been removed (not needed, only made things worse)
